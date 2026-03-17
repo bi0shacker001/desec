@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "desec"
+version = "0.1.0"
+description = "deSEC DNS token & record manager — TUI, GUI, and CLI"
+requires-python = ">=3.11"
+dependencies = [
+    # HTTP client — used for all deSEC API calls
+    "httpx>=0.27.0",
+    # Terminal UI framework — required for the TUI (desec with no subcommand)
+    "textual>=0.80.0",
+    # YAML output support — optional but strongly recommended
+    "pyyaml>=6.0",
+    # Rich text tables in CLI output — optional, falls back to plain text
+    "rich>=13.0",
+]
+
+[project.optional-dependencies]
+# Install PySide6 separately for the Qt GUI: pip install "desec[gui]"
+# PySide6 is large (~100MB) and not needed for TUI/CLI use.
+gui = [
+    "PySide6>=6.7.0",
+]
+
+[project.scripts]
+# 'desec' command is available after installing this package.
+# It runs desec.py's __main__ block.
+desec = "desec:main"
+
+[tool.hatch.build.targets.wheel]
+# Only include the desec.py entrypoint and the code packages.
+# old/ is excluded from the installed package (it's the retired Flet GUI).
+packages = ["core", "tui", "gui"]
+include = ["desec.py"]
